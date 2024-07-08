@@ -22,8 +22,24 @@ public class ClientService {
      * @throws IOException exception
      */
     public static ProjectApiRoot createApiClient(final String prefix) throws IOException {
+        final Properties props = new Properties();
+        props.load(ClientService.class.getResourceAsStream("/dev.properties"));
 
-        projectApiRoot = null;
+        String clientId = props.getProperty(prefix + "clientId");
+        String clientSecret = props.getProperty(prefix + "clientSecret");
+        String projectKey = props.getProperty(prefix + "projectKey");
+
+        projectApiRoot = ApiRootBuilder.of()
+            .defaultClient(
+                ClientCredentials.of()
+                    .withClientId(clientId)
+                    .withClientSecret(clientSecret)
+                    .build(),
+                ServiceRegion.GCP_EUROPE_WEST1.getOAuthTokenUrl(),
+                ServiceRegion.GCP_EUROPE_WEST1.getApiUrl()
+            )
+            .build(projectKey);
+
         return projectApiRoot;
     }
 
