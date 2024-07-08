@@ -36,7 +36,16 @@ public class Task02b_UPDATE_Group {
         //  ASSIGN the customer to the customer group
         //
         logger.info("Customer assigned to group: " +
-                ""
+            customerService.getCustomerByKey("al-customer")
+                .thenCombineAsync(
+                    customerService.getCustomerGroupByKey("clppl"),
+                    customerService::assignCustomerToCustomerGroup
+                )
+                .thenComposeAsync(CompletableFuture::toCompletableFuture)
+                .exceptionally(throwable -> { logger.info(throwable.getLocalizedMessage()); return null; })
+                .get()
+                .getBody()
+                .getEmail()
         );
         client.close();
     }

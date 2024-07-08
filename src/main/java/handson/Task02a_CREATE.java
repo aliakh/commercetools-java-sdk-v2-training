@@ -34,7 +34,10 @@ public class Task02a_CREATE {
         CustomerService customerService = new CustomerService(client);
 
             logger.info("Customer fetch: " +
-                    ""
+                customerService.getCustomerByKey("al-customer")
+                    .toCompletableFuture()
+                    .get()
+                    .getBody().getEmail()
             );
 
             // TODO:
