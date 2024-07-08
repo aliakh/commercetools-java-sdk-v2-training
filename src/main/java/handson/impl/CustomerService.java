@@ -22,7 +22,10 @@ public class CustomerService {
 
     public CompletableFuture<ApiHttpResponse<Customer>> getCustomerByKey(final String customerKey) {
         return
-                null;
+            apiRoot.customers()
+                .withKey(customerKey)
+                .get()
+                .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> createCustomer(
@@ -34,7 +37,23 @@ public class CustomerService {
             final String country) {
 
         return
-                null;
+            apiRoot.customers()
+                .post(
+                    CustomerDraftBuilder.of()
+                        .email(email)
+                        .password(password)
+                        .key(customerKey)
+                        .firstName(firstName)
+                        .lastName(lastName)
+                        .addresses(
+                            AddressBuilder.of()
+                                .country(country)
+                                .build()
+                        )
+                        .defaultShippingAddress(0)
+                        .build()
+                )
+                .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<CustomerToken>> createEmailVerificationToken(
@@ -45,7 +64,16 @@ public class CustomerService {
         final Customer customer = customerSignInResultApiHttpResponse.getBody().getCustomer();
 
         return
-                null;
+            apiRoot
+                .customers()
+                .emailToken()
+                .post(
+                    CustomerCreateEmailTokenBuilder.of()
+                        .id(customer.getId())
+                        .ttlMinutes(timeToLiveInMinutes)
+                        .build()
+                )
+                .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<CustomerToken>> createEmailVerificationToken(final Customer customer, final long timeToLiveInMinutes) {
