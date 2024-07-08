@@ -43,7 +43,20 @@ public class Task02a_CREATE {
             //  Verify customer
             //
             logger.info("Customer created: " +
-                    ""
+                customerService.createCustomer(
+                    "aliaksandr_liakh1_v2@epam.com",
+                    "my_password",
+                    "al-customer-v2",
+                    "Aliaksandr",
+                    "Liakh",
+                    "DE"
+                )
+                    .thenComposeAsync(customerSignInResult ->
+                        customerService.createEmailVerificationToken(customerSignInResult, 5))
+                    .thenComposeAsync(customerService::verifyEmail)
+                    .toCompletableFuture()
+                    .get()
+                    .getBody()
             );
 
 

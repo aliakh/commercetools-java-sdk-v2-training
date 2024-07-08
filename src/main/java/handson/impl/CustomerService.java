@@ -96,7 +96,7 @@ public class CustomerService {
         final CustomerToken customerToken = customerTokenApiHttpResponse.getBody();
 
         return
-                null;
+                verifyEmail(customerToken);
     }
 
     public CompletableFuture<ApiHttpResponse<Customer>> verifyEmail(final CustomerToken customerToken) {
