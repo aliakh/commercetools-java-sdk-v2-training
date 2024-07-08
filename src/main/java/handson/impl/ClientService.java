@@ -22,7 +22,7 @@ public class ClientService {
      * @throws IOException exception
      */
     public static ProjectApiRoot createApiClient(final String prefix) throws IOException {
-        final Properties props = new Properties();
+        Properties props = new Properties();
         props.load(ClientService.class.getResourceAsStream("/dev.properties"));
 
         String clientId = props.getProperty(prefix + "clientId");
@@ -44,15 +44,21 @@ public class ClientService {
     }
 
     public static String getProjectKey(final String prefix) throws IOException {
-        return null;
+        Properties props = new Properties();
+        props.load(ClientService.class.getResourceAsStream("/dev.properties"));
+        return props.getProperty(prefix + "projectKey");
     }
 
     public static String getClientId(final String prefix) throws IOException {
-        return null;
+        Properties props = new Properties();
+        props.load(ClientService.class.getResourceAsStream("/dev.properties"));
+        return props.getProperty(prefix + "clientId");
     }
 
     public static String getClientSecret(final String prefix) throws IOException {
-        return null;
+        Properties props = new Properties();
+        props.load(ClientService.class.getResourceAsStream("/dev.properties"));
+        return props.getProperty(prefix + "clientSecret");
     }
 
     public static String getStoreKey(final String prefix) throws IOException {
