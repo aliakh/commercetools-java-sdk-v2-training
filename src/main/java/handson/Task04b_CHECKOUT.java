@@ -39,7 +39,7 @@ public class Task04b_CHECKOUT {
         Channel channel = client
             .channels()
             .get()
-            .withQuery(q -> q.key().is(""))
+            .withQuery(q -> q.key().is("inventory-channel"))
             .execute()
             .toCompletableFuture()
             .get()
@@ -71,7 +71,7 @@ public class Task04b_CHECKOUT {
                 .thenComposeAsync(cartService::createCart)
 
                 .thenComposeAsync(cartApiHttpResponse -> cartService.addProductToCartBySkusAndChannel(
-                    cartApiHttpResponse, channel, "", ""
+                    cartApiHttpResponse, channel, "RWG-09", "CTSS-0983"
                 ))
 
                 .thenComposeAsync(cartApiHttpResponse -> cartService.addDiscountToCart(cartApiHttpResponse, "BOGO"))
