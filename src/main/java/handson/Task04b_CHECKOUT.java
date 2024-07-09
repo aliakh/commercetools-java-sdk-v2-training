@@ -71,7 +71,7 @@ public class Task04b_CHECKOUT {
                 .thenComposeAsync(cartService::createCart)
 
                 .thenComposeAsync(cartApiHttpResponse -> cartService.addProductToCartBySkusAndChannel(
-                    cartApiHttpResponse, channel, "RWG-09", "CTSS-0983"
+                    cartApiHttpResponse, channel, "RWG-09", "GARM-093"
                 ))
 
                 .thenComposeAsync(cartApiHttpResponse -> cartService.addDiscountToCart(cartApiHttpResponse, "BOGO"))
