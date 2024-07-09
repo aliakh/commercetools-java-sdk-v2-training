@@ -67,7 +67,7 @@ public class Task04b_CHECKOUT {
         // TODO additionally: add custom line items, add shipping method
         //
         logger.info("Created cart/order ID: " +
-            customerService.getCustomerByKey("al-sustomer-v2")
+            customerService.getCustomerByKey("al-customer")
                 .thenComposeAsync(cartService::createCart)
 
                 .thenComposeAsync(cartApiHttpResponse -> cartService.addProductToCartBySkusAndChannel(
@@ -79,12 +79,12 @@ public class Task04b_CHECKOUT {
                 .thenComposeAsync(cartService::recalculate)
                 .thenComposeAsync(cartService::setShipping)
 
-                .thenComposeAsync(cartApiHttpResponse -> paymentService.createPaymentAndAddToCart((
-                        cartApiHttpResponse,
+                .thenComposeAsync(cartApiHttpResponse -> paymentService.createPaymentAndAddToCart(
+                    cartApiHttpResponse,
                     "something",
                     "CC",
-                    "pay" + Math.random(),
-                    "pay_int" + Math.random()
+                    "interface" + Math.random(),
+                    "interaction" + Math.random()
                 ))
                 .thenComposeAsync(orderService::createOrder)
 
