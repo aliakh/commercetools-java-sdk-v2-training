@@ -76,7 +76,22 @@ public class OrderService {
             final ApiHttpResponse<Order> orderApiHttpResponse,
             final State workflowState) {
 
-        return null;
+        final Order order = orderApiHttpResponse.getBody();
+
+        return apiRoot
+            .orders()
+            .withId(order.getId())
+            .post(
+                OrderUpdateBuilder.of()
+                    .version(order.getVersion())
+                    .actions(
+                        ChangeWorkflowStateActionBuilder.of()
+                            .orderState(workflowState)
+                            .build()
+                    )
+                    .build()
+            )
+            .execute();
     }
 
 }
