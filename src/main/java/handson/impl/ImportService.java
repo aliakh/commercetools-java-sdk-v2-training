@@ -46,9 +46,33 @@ public class ImportService {
             final String priceKey,
             final Money amount) {
 
+        final PriceImportRequest resources = PriceImportRequestBuilder.of()
+            .resources(
+                PriceImportBuilder.of()
+                    .key(priceKey)
+                    .country("DE")
+                    .product(ProductKeyReferenceBuilder.of()
+                        .key(productKey)
+                        .build()
+                    )
+                    .productVariant(ProductVariantKeyReferenceBuilder.of()
+                        .key(productVariantKey)
+                        .build()
+                    )
+                    .value(amount)
+                    .build()
+            )
+            .build();
 
-            return
-                    null;
+        return
+            apiRoot
+                .prices()
+                .importContainers()
+                .withImportContainerKeyValue(containerKey)
+                .post(
+                    resources
+                )
+                .execute();
     }
 
 
