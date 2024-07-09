@@ -67,27 +67,35 @@ public class Task04b_CHECKOUT {
         // TODO additionally: add custom line items, add shipping method
         //
         logger.info("Created cart/order ID: " +
-                customerService.getCustomerByKey("al-sustomer-v2")
-                    .thenComposeAsync(cartService::createCart)
-                    .thenComposeAsync(cartApiHttpResponse -> cartService.addDiscountToCart("BOGO",
-                        cartApiHttpResponse, channel, "", ""
-                    ))
-                    .thenComposeAsync(cartService::recalculate)
-                    .thenComposeAsync(cartService::setShipping)
-                    .thenComposeAsync(cartApiHttpResponse -> paymentService.createPaymentAndAddToCart((
+            customerService.getCustomerByKey("al-sustomer-v2")
+                .thenComposeAsync(cartService::createCart)
+
+                .thenComposeAsync(cartApiHttpResponse -> cartService.addProductToCartBySkusAndChannel(
+                    cartApiHttpResponse, channel, "", ""
+                ))
+
+                .thenComposeAsync(cartApiHttpResponse -> cartService.addDiscountToCart(cartApiHttpResponse, "BOGO"))
+
+                .thenComposeAsync(cartService::recalculate)
+                .thenComposeAsync(cartService::setShipping)
+
+                .thenComposeAsync(cartApiHttpResponse -> paymentService.createPaymentAndAddToCart((
                         cartApiHttpResponse,
-                        "something",
-                        "CC",
-                        "pay"+Math.random(),
-                        "pay_int"+Math.random()
-                        ))
-                    .thenComposeAsync(orderService::createOrder)
-                    .thenComposeAsync(orderApiHttpResponse -> orderService.changeState(orderApiHttpResponse, OrderState.COMPLETE))
-                    .thenComposeAsync(orderApiHttpResponse -> orderService.changeWorkflowState(orderApiHttpResponse, state))
-                    .toCompletableFuture()
-                    .get()
-                    .getBody()
-                    .getId()
+                    "something",
+                    "CC",
+                    "pay" + Math.random(),
+                    "pay_int" + Math.random()
+                ))
+                .thenComposeAsync(orderService::createOrder)
+
+                .thenComposeAsync(orderApiHttpResponse -> orderService.changeState(orderApiHttpResponse, OrderState.COMPLETE))
+
+                .thenComposeAsync(orderApiHttpResponse -> orderService.changeWorkflowState(orderApiHttpResponse, state))
+
+                .toCompletableFuture()
+                .get()
+                .getBody()
+                .getId()
         );
 
         client.close();
