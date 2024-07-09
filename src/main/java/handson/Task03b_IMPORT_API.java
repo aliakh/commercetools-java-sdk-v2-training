@@ -25,7 +25,7 @@ public class Task03b_IMPORT_API {
         //  Provide a container key
         //
         final String apiImportClientPrefix = ApiPrefixHelper.API_DEV_IMPORT_PREFIX.getPrefix();
-        final String containerKey = "mh-berlin-store-prices";
+        final String containerKey = "al-price-container-v2";
 
         Logger logger = LoggerFactory.getLogger(Task02b_UPDATE_Group.class.getName());
         final ProjectApiRoot client = createImportApiClient(apiImportClientPrefix);
@@ -49,7 +49,7 @@ public class Task03b_IMPORT_API {
             .build();
 
         logger.info("Created price resource {} ",
-                importService.createPriceImportRequest(containerKey,"","TULIPSEED01", "TulipSeed01Price01", amount)
+                importService.createPriceImportRequest(containerKey,"rye-whiskey-glass","RWG-09", "TulipSeed01Price02", amount)
                         .toCompletableFuture().get()
         );
 
