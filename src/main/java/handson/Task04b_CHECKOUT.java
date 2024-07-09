@@ -36,10 +36,25 @@ public class Task04b_CHECKOUT {
 
         // TODO: Fetch a channel if your inventory mode will not be NONE
         //
-        Channel channel = null;
+        Channel channel = client
+            .channels()
+            .get()
+            .withQuery(q -> q.key().is(""))
+            .execute()
+            .toCompletableFuture()
+            .get()
+            .getBody()
+            .getResults()
+            .get(0);
 
-        final State state = null;
-
+        final State state = client
+            .states()
+            .withKey("mhOrderPacked")
+            .get()
+            .execute()
+            .toCompletableFuture()
+            .get()
+            .getBody();
 
         // TODO: Perform cart operations:
         //      Get Customer, create cart, add products, add inventory mode
@@ -52,7 +67,27 @@ public class Task04b_CHECKOUT {
         // TODO additionally: add custom line items, add shipping method
         //
         logger.info("Created cart/order ID: " +
-                ""
+                customerService.getCustomerByKey("al-sustomer-v2")
+                    .thenComposeAsync(cartService::createCart)
+                    .thenComposeAsync(cartApiHttpResponse -> cartService.addDiscountToCart("BOGO",
+                        cartApiHttpResponse, channel, "", ""
+                    ))
+                    .thenComposeAsync(cartService::recalculate)
+                    .thenComposeAsync(cartService::setShipping)
+                    .thenComposeAsync(cartApiHttpResponse -> paymentService.createPaymentAndAddToCart((
+                        cartApiHttpResponse,
+                        "something",
+                        "CC",
+                        "pay"+Math.random(),
+                        "pay_int"+Math.random()
+                        ))
+                    .thenComposeAsync(orderService::createOrder)
+                    .thenComposeAsync(orderApiHttpResponse -> orderService.changeState(orderApiHttpResponse, OrderState.COMPLETE))
+                    .thenComposeAsync(orderApiHttpResponse -> orderService.changeWorkflowState(orderApiHttpResponse, state))
+                    .toCompletableFuture()
+                    .get()
+                    .getBody()
+                    .getId()
         );
 
         client.close();
