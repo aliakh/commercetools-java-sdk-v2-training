@@ -31,8 +31,21 @@ public class OrderService {
     }
 
     public CompletableFuture<ApiHttpResponse<Order>> createOrder(final ApiHttpResponse<Cart> cartApiHttpResponse) {
+        final Cart cart = cartApiHttpResponse.getBody();
 
-        return null;
+        return apiRoot
+            .orders()
+            .post(
+                OrderFromCartDraftBuilder.of()
+                    .version(cart.getVersion())
+                    .cart(
+                        CartResourceIdentifierBuilder.of()
+                            .id(cart.getId())
+                            .build()
+                    )
+                    .build()
+            )
+            .execute();
     }
 
 
@@ -40,7 +53,22 @@ public class OrderService {
             final ApiHttpResponse<Order> orderApiHttpResponse,
             final OrderState state) {
 
-       return null;
+        final Order order = orderApiHttpResponse.getBody();
+
+        return apiRoot
+            .orders()
+            .withId(order.getId())
+            .post(
+                OrderUpdateBuilder.of()
+                    .version(order.getVersion())
+                    .actions(
+                        OrderChangeOrderStateActionBuilder.of()
+                            .orderState(state)
+                            .build()
+                    )
+                    .build()
+            )
+            .execute();
     }
 
 

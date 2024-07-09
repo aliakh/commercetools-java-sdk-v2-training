@@ -134,8 +134,8 @@ public class CartService {
 
     public CompletableFuture<ApiHttpResponse<Cart>> addDiscountToCart(
             final ApiHttpResponse<Cart> cartApiHttpResponse, final String code) {
-
         final Cart cart = cartApiHttpResponse.getBody();
+
         return apiRoot
             .carts()
             .withId(cart.getId())
@@ -154,6 +154,7 @@ public class CartService {
 
     public CompletableFuture<ApiHttpResponse<Cart>> recalculate(final ApiHttpResponse<Cart> cartApiHttpResponse) {
         final Cart cart = cartApiHttpResponse.getBody();
+
         return apiRoot
             .carts()
             .withId(cart.getId())
@@ -200,7 +201,5 @@ public class CartService {
                     .build()
             ).execute();
     }
-
-
 
 }
