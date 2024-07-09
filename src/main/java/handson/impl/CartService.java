@@ -3,6 +3,7 @@ package handson.impl;
 import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.models.cart.*;
 import com.commercetools.api.models.channel.Channel;
+import com.commercetools.api.models.channel.ChannelResourceIdentifier;
 import com.commercetools.api.models.channel.ChannelResourceIdentifierBuilder;
 import com.commercetools.api.models.customer.Customer;
 import com.commercetools.api.models.shipping_method.ShippingMethod;
@@ -45,8 +46,36 @@ public class CartService {
 
     public CompletableFuture<ApiHttpResponse<Cart>> createCart(final ApiHttpResponse<Customer> customerApiHttpResponse) {
 
+        final Customer customer = customerApiHttpResponse.getBody();
+
         return
-                null;
+            apiRoot
+                .carts()
+                .post(
+                    CartDraftBuilder.of()
+                        .currency("EUR")
+                        .deleteDaysAfterLastModification(90L)
+                        .customerEmail(customer.getEmail())
+                        .customerId(customer.getId())
+                        .country(
+                           customer.getAddresses()
+                               .stream()
+                               .filter(address -> address.getId().equals(customer.getDefaultShippingAddressId()))
+                               .findFirst()
+                               .orElse(null)
+                               .getCountry()
+                        )
+                        .shippingAddress(
+                            customer.getAddresses()
+                                .stream()
+                                .filter(address -> address.getId().equals(customer.getDefaultShippingAddressId()))
+                                .findFirst()
+                                .orElse(null)
+                        )
+                        .inventoryMode(InventoryMode.NONE)
+                        .build()
+                )
+                .execute();
     }
 
 
@@ -72,7 +101,34 @@ public class CartService {
             final Channel channel,
             final String ... skus) {
 
-        return null;
+        final Cart cart = cartApiHttpResponse.getBody();
+
+        List<CartUpdateAction> addLineItemActions = Stream.of(skus)
+            .map(sku ->
+                CartAddLineItemActionBuilder.of()
+                    .sku(sku)
+                    .quantity(1L)
+                    .supplyChannel(
+                        ChannelResourceIdentifierBuilder.of()
+                            .id(channel.getId())
+                            .build()
+                    )
+                    .build()
+            )
+            .collect(Collectors.toList());
+
+        return apiRoot
+            .carts()
+            .withId(cart.getId())
+            .post(
+                CartUpdateBuilder.of()
+                    .version(cart.getVersion())
+                    .actions(
+                        addLineItemActions
+                    )
+                    .build()
+            )
+            .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<Cart>> addDiscountToCart(
