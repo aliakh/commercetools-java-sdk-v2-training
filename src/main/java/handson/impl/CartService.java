@@ -134,17 +134,53 @@ public class CartService {
     public CompletableFuture<ApiHttpResponse<Cart>> addDiscountToCart(
             final ApiHttpResponse<Cart> cartApiHttpResponse, final String code) {
 
-        return null;
+        final Cart cart = cartApiHttpResponse.getBody();
+        return apiRoot
+            .carts()
+            .withId(cart.getId())
+            .post(
+                CartUpdateBuilder.of()
+                    .version(cart.getVersion())
+                    .actions(
+                        CartAddDiscountCodeActionBuilder.of()
+                            .code(code)
+                            .build()
+                    )
+                    .build()
+            )
+            .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<Cart>> recalculate(final ApiHttpResponse<Cart> cartApiHttpResponse) {
-
-        return null;
+        final Cart cart = cartApiHttpResponse.getBody();
+        return apiRoot
+            .carts()
+            .withId(cart.getId())
+            .post(
+                CartUpdateBuilder.of()
+                    .version(cart.getVersion())
+                    .actions(
+                        CartRecalculateActionBuilder.of()
+                            .build()
+                    )
+                    .build()
+            ).execute();
     }
 
     public CompletableFuture<ApiHttpResponse<Cart>> setShipping(final ApiHttpResponse<Cart> cartApiHttpResponse) {
-
-        return null;
+        final Cart cart = cartApiHttpResponse.getBody();
+        return apiRoot
+            .carts()
+            .withId(cart.getId())
+            .post(
+                ShippingBuilder.of()
+                    .version(cart.getVersion())
+                    .actions(
+                        CartRecalculateActionBuilder.of()
+                            .build()
+                    )
+                    .build()
+            ).execute();
     }
 
 
