@@ -85,8 +85,12 @@ public class OrderService {
                 OrderUpdateBuilder.of()
                     .version(order.getVersion())
                     .actions(
-                        ChangeWorkflowStateActionBuilder.of()
-                            .orderState(workflowState)
+                        OrderTransitionStateActionBuilder.of()
+                            .state(
+                                StateResourceIdentifierBuilder.of()
+                                    .id(workflowState.getId())
+                                    .build()
+                            )
                             .build()
                     )
                     .build()
