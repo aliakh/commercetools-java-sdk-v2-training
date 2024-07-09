@@ -7,6 +7,7 @@ import com.commercetools.api.models.channel.ChannelResourceIdentifier;
 import com.commercetools.api.models.channel.ChannelResourceIdentifierBuilder;
 import com.commercetools.api.models.customer.Customer;
 import com.commercetools.api.models.shipping_method.ShippingMethod;
+import com.commercetools.api.models.shipping_method.ShippingMethodResourceIdentifier;
 import com.commercetools.api.models.shipping_method.ShippingMethodResourceIdentifierBuilder;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 
@@ -169,14 +170,31 @@ public class CartService {
 
     public CompletableFuture<ApiHttpResponse<Cart>> setShipping(final ApiHttpResponse<Cart> cartApiHttpResponse) {
         final Cart cart = cartApiHttpResponse.getBody();
+
+        final ShippingMethod shippingMethod =
+            apiRoot
+                .shippingMethods()
+                .matchingCart()
+                .get()
+                .withCartId(cart.getId())
+                .executeBlocking()
+                .getBody()
+                .getResults()
+                .get(0);
+
         return apiRoot
             .carts()
             .withId(cart.getId())
             .post(
-                ShippingBuilder.of()
+                CartUpdateBuilder.of()
                     .version(cart.getVersion())
                     .actions(
-                        CartRecalculateActionBuilder.of()
+                        CartSetShippingMethodActionBuilder.of()
+                            .shippingMethod(
+                                ShippingMethodResourceIdentifierBuilder.of()
+                                    .id(shippingMethod.getId())
+                                    .build()
+                            )
                             .build()
                     )
                     .build()
