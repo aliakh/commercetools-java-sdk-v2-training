@@ -72,7 +72,29 @@ public class Task07a_CUSTOMTYPES {
         };
 
         logger.info("Custom Type info: " +
-                " "
+            client
+                .types()
+                .post(
+                    TypeDraftBuilder.of()
+                        .key("al-customer-extension")
+                        .name(
+                            LocalizedStringBuilder.of()
+                                .values(namesForType)
+                                .build()
+                        )
+                        .resourceTypeIds(
+                            ResourceTypeId.CUSTOMER
+                        )
+                        .fieldDefinitions(
+                            definitions
+                        )
+                        .build()
+                )
+                .execute()
+                .toCompletableFuture()
+                .get()
+                .getBody()
+                .getId()
         );
 
         client.close();

@@ -52,7 +52,7 @@ public class Task06b_PAGEDQUERY {
 
         String productTypeId = client
                 .productTypes()
-                .withKey("plant-seeds-product-type")
+                .withKey("furniture-and-decor")
                 .get()
                 .execute()
                 .toCompletableFuture().get()
@@ -70,9 +70,9 @@ public class Task06b_PAGEDQUERY {
                             .withSort("id asc")
 
                             .withWhere("id > :lastId")
-//                            .addWhere("productType(id = :productTypeId)")
+                            .addWhere("productType(id = :productTypeId)")
                             .withPredicateVar("lastId", lastId)
-//                            .addPredicateVar("productTypeId", productTypeId)
+                            .addPredicateVar("productTypeId", productTypeId)
 
 
                             // Limit the size per page
