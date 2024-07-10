@@ -26,7 +26,7 @@ public class Task06a_SEARCH {
 
         Category seedCategory = client
                 .categories()
-                .withKey("plant-seeds")
+                .withKey("furniture")
                 .get()
                 .execute()
                 .toCompletableFuture().get()
@@ -42,7 +42,17 @@ public class Task06a_SEARCH {
 
             // the effective filter from the search response
             // params found in the product projection search https://docs.commercetools.com/api/projects/products-search#search-productprojections
-            ProductProjectionPagedSearchResponse productProjectionPagedSearchResponse = null;
+            ProductProjectionPagedSearchResponse productProjectionPagedSearchResponse =
+                client
+                    .productProjections()
+                    .search()
+                    .get()
+                    .withStaged(false)
+                    .withMarkMatchingVariants(true)
+                    .withLimit(50)
+                    .withFilterQuery("categories.id:\"" + seedCategory.getId() + "\"")
+                    .executeBlocking()
+                    .getBody();
 
 
         int size = productProjectionPagedSearchResponse.getResults().size();
