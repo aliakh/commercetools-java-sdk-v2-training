@@ -61,7 +61,7 @@ public class ProductSelectionService {
      *
      * @return the product selection creation completion stage
      */
-    public CompletableFuture<ApiHttpResponse<ProductSelection>> createProductSelection(final String productSelectionKey, final String name) throws ExecutionException, InterruptedException {
+    public CompletableFuture<ApiHttpResponse<ProductSelection>> createProductSelection(final String productSelectionKey, final String name) {
         Map<String, String> productSelectionNames = new HashMap<String, String>() {
             {
                 put("DE", name);
@@ -151,7 +151,7 @@ public class ProductSelectionService {
                 .products()
                 .get()
                 .addExpand("product")
-                .execute();;
+                .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<ProductsInStorePagedQueryResponse>> getProductsInStore(

@@ -45,15 +45,28 @@ public class Task05b_PRODUCTSELECTIONS {
         // TODO: Get a store and assign the product selection to the store
 
 
-        logger.info("Product selections assigned to the store: "
-                + ""
+        logger.info("Product selections assigned to the store: " +
+            productSelectionService.getStoreByKey("cool-store")
+                .thenComposeAsync(storeApiHttpResponse ->
+                    productSelectionService.addProductSelectionToStore(
+                        storeApiHttpResponse,
+                        productSelectionService.getProductsInProductSelection(productSelectionKey)
+                    ))
+                .thenComposeAsync(x ->
+                    productSelectionService.)
+                .toCompletableFuture()
+                .get()
+                .getBody()
         );
 
 
         // TODO Get products in a product selection
 
-        List<AssignedProductReference> assignedProductReferences = null;
-//        assignedProductReferences.forEach(assignedProductReference -> logger.info(assignedProductReference.getProduct().getObj().getKey()));
-
+        List<AssignedProductReference> assignedProductReferences =
+            productSelectionService.getProductsInProductSelection(productSelectionKey)
+                .get()
+                .getBody()
+                .getResults();
+        assignedProductReferences.forEach(assignedProductReference -> logger.info(assignedProductReference.getProduct().getObj().getKey()));
     }
 }
