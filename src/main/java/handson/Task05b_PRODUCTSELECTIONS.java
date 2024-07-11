@@ -33,7 +33,11 @@ public class Task05b_PRODUCTSELECTIONS {
 
         // TODO: Create product selection and add a product to the product selection
 
-        ProductSelection productSelection = null;
+        ProductSelection productSelection = productSelectionService
+            .createProductSelection(productSelectionKey, "LA Product Selection")
+            .toCompletableFuture()
+            .get()
+            .getBody();
         logger.info("Created product selection: " + productSelection.getId());
 
 
