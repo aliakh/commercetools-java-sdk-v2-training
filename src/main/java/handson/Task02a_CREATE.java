@@ -23,22 +23,13 @@ import static handson.impl.ClientService.createApiClient;
 public class Task02a_CREATE {
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
-        /**
-         * TODO:
-         * UPDATE the ApiPrefixHelper with your prefix from dev.properties (e.g. "mh-dev-admin.")
-         */
+        // TODO:
+        //  UPDATE the ApiPrefixHelper with your prefix from dev.properties (e.g. "mh-dev-admin.")
         final String apiClientPrefix = ApiPrefixHelper.API_DEV_CLIENT_PREFIX.getPrefix();
 
         Logger logger = LoggerFactory.getLogger(Task02a_CREATE.class.getName());
         final ProjectApiRoot client = createApiClient(apiClientPrefix);
         CustomerService customerService = new CustomerService(client);
-
-            logger.info("Customer fetch: " +
-                customerService.getCustomerByKey("al-customer")
-                    .toCompletableFuture()
-                    .get()
-                    .getBody().getEmail()
-            );
 
             // TODO:
             //  CREATE a customer
@@ -47,9 +38,9 @@ public class Task02a_CREATE {
             //
             logger.info("Customer created: " +
                 customerService.createCustomer(
-                    "aliaksandr_liakh1@epam.com",
+                    "liakh.aliaksandr@gmail.com",
                     "my_password",
-                    "al-customer",
+                    "la-customer",
                     "Aliaksandr",
                     "Liakh",
                     "DE"
@@ -62,6 +53,12 @@ public class Task02a_CREATE {
                     .getBody()
             );
 
+            logger.info("Customer fetch: " +
+                customerService.getCustomerByKey("la-customer")
+                    .toCompletableFuture()
+                    .get()
+                    .getBody().getEmail()
+            );
 
         client.close();
     }

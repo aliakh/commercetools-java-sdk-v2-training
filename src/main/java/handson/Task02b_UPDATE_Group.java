@@ -36,7 +36,7 @@ public class Task02b_UPDATE_Group {
         //  ASSIGN the customer to the customer group
         //
         logger.info("Customer assigned to group: " +
-            customerService.getCustomerByKey("al-customer")
+            customerService.getCustomerByKey("la-customer")
                 .thenCombineAsync(
                     customerService.getCustomerGroupByKey("clppl"),
                     customerService::assignCustomerToCustomerGroup
