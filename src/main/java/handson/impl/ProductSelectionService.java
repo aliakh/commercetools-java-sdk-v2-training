@@ -62,10 +62,10 @@ public class ProductSelectionService {
      * @return the product selection creation completion stage
      */
     public CompletableFuture<ApiHttpResponse<ProductSelection>> createProductSelection(final String productSelectionKey, final String name) throws ExecutionException, InterruptedException {
-
-        Map<String, String> namesForType = new HashMap<String, String>() {
+        Map<String, String> productSelectionNames = new HashMap<String, String>() {
             {
-                put("EN", "good selection");
+                put("DE", name);
+                put("EN", name);
             }
         };
 
@@ -74,15 +74,15 @@ public class ProductSelectionService {
                 .productSelections()
                 .post(
                     ProductSelectionDraftBuilder.of()
+                        .key(productSelectionKey)
                         .name(
                             LocalizedStringBuilder.of()
-                                .values(namesForType)
+                                .values(productSelectionNames)
                                 .build()
                         )
                         .build()
                 )
-                .execute()
-                .toCompletableFuture();
+                .execute();
     }
 
 
@@ -90,49 +90,80 @@ public class ProductSelectionService {
             final ApiHttpResponse<ProductSelection> productSelectionApiHttpResponse,
             final String productKey) {
 
-        ProductSelection productSelection = productSelectionApiHttpResponse.getBody();
+        final ProductSelection productSelection = productSelectionApiHttpResponse.getBody();
 
         return
             apiRoot
                 .productSelections()
-                .withKey(productSelection.getKey())
+                .withId(productSelection.getId())
                 .post(
                     ProductSelectionUpdateBuilder.of()
-                        .actions(
-                            ProductSelectionUpdateActionBuilder.of()
-                                .addProductBuilder()
-                                .product(
-                                    ProductResourceIdentifierBuilder.of()
-                                        .key(productKey)
-                                        .build()
-                                )
-                                .build()
-                        )
+                        .version(productSelection.getVersion())
+                        .actions(ProductSelectionAddProductActionBuilder.of()
+                            .product(
+                                ProductResourceIdentifierBuilder.of()
+                                    .key(productKey)
+                                    .build())
+                            .build())
                         .build()
                 )
-                .execute()
-                .toCompletableFuture();
+                .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<Store>> addProductSelectionToStore(
             final ApiHttpResponse<Store> storeApiHttpResponse,
             final ApiHttpResponse<ProductSelection> productSelectionApiHttpResponse) {
 
+        final ProductSelection productSelection = productSelectionApiHttpResponse.getBody();
+        final Store store = storeApiHttpResponse.getBody();
+
         return
-                null;
+            apiRoot
+                .stores()
+                .withId(store.getId())
+                .post(
+                    StoreUpdateBuilder.of()
+                        .version(store.getVersion())
+                        .actions(
+                            StoreSetProductSelectionsActionBuilder.of()
+                                .productSelections(
+                                    ProductSelectionSettingDraftBuilder.of()
+                                        .productSelection(
+                                            ProductSelectionResourceIdentifierBuilder.of()
+                                                .id(productSelection.getId())
+                                                .build())
+                                        .active(true)
+                                        .build())
+                                .build()
+                        )
+                        .build()
+                )
+                .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<ProductSelectionProductPagedQueryResponse>> getProductsInProductSelection(
             final String productSelectionKey) {
 
         return
-                null;
+            apiRoot
+                .productSelections()
+                .withKey(productSelectionKey)
+                .products()
+                .get()
+                .addExpand("product")
+                .execute();;
     }
 
     public CompletableFuture<ApiHttpResponse<ProductsInStorePagedQueryResponse>> getProductsInStore(
             final String storeKey) {
 
         return
-                null;
+            apiRoot
+                .inStore(storeKey)
+                .productSelectionAssignments()
+                .get()
+                .addExpand("product")
+                .addExpand("product-selection")
+                .execute();
     }
 }
