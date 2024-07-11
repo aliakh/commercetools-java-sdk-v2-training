@@ -32,7 +32,7 @@ public class Task04c_CART_MERGING {
 
         // Get a customer and create a cart for this customer
         //
-        final Cart cart = customerService.getCustomerByKey("customer-michael15")
+        final Cart cart = customerService.getCustomerByKey("al-customer")
                 .thenComposeAsync(cartService::createCart)
                 .toCompletableFuture().get()
                 .getBody();
@@ -54,8 +54,8 @@ public class Task04c_CART_MERGING {
                 .post(
                         CustomerSigninBuilder.of()
                                 .anonymousCartSignInMode(MERGE_WITH_EXISTING_CUSTOMER_CART) // Switch to USE_AS_NEW_ACTIVE_CUSTOMER_CART and notice the difference
-                                .email("michael15@example.com")
-                                .password("password")
+                                .email("liakh.aliaksandr@gmail.com")
+                                .password("my_password")
                                 .anonymousCart(CartResourceIdentifierBuilder.of()
                                         .id(anonymousCart.getId())
                                         .build())
