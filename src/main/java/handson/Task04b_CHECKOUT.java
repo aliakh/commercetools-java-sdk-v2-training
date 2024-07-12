@@ -80,8 +80,8 @@ public class Task04b_CHECKOUT {
                 .thenComposeAsync(cartService::setShipping)
                 .thenComposeAsync(cartApiHttpResponse -> paymentService.createPaymentAndAddToCart(
                         cartApiHttpResponse,
-                        "something",
-                        "CC",
+                        "provider", // PSP Provider Name: WireCard, ....
+                        "CC", // PSP Provider Method: CreditCard, ...
                         "interface" + Math.random(),
                         "interaction" + Math.random()
                     )
