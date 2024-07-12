@@ -43,10 +43,12 @@ public class Task02b_UPDATE_Group {
                 )
                 .thenComposeAsync(CompletableFuture::toCompletableFuture)
                 .exceptionally(throwable -> { logger.info(throwable.getLocalizedMessage()); return null; })
+                .toCompletableFuture()
                 .get()
                 .getBody()
                 .getEmail()
         );
+
         client.close();
     }
 
