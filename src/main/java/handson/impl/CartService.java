@@ -3,15 +3,12 @@ package handson.impl;
 import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.models.cart.*;
 import com.commercetools.api.models.channel.Channel;
-import com.commercetools.api.models.channel.ChannelResourceIdentifier;
 import com.commercetools.api.models.channel.ChannelResourceIdentifierBuilder;
 import com.commercetools.api.models.customer.Customer;
 import com.commercetools.api.models.shipping_method.ShippingMethod;
-import com.commercetools.api.models.shipping_method.ShippingMethodResourceIdentifier;
 import com.commercetools.api.models.shipping_method.ShippingMethodResourceIdentifierBuilder;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -27,7 +24,6 @@ public class CartService {
     public CartService(final ProjectApiRoot client) {
         this.apiRoot = client;
     }
-
 
     /**
      * Creates a cart for the given customer.
@@ -73,7 +69,7 @@ public class CartService {
                                 .findFirst()
                                 .orElse(null)
                         )
-                        .inventoryMode(InventoryMode.NONE)
+                        .inventoryMode(InventoryMode.NONE) // InventoryMode.RESERVE_ON_ORDER
                         .build()
                 )
                 .execute();
@@ -104,7 +100,7 @@ public class CartService {
 
         final Cart cart = cartApiHttpResponse.getBody();
 
-        List<CartUpdateAction> addLineItemActions = Stream.of(skus)
+        List<CartUpdateAction> cartAddLineItemActions = Stream.of(skus)
             .map(sku ->
                 CartAddLineItemActionBuilder.of()
                     .sku(sku)
@@ -125,7 +121,7 @@ public class CartService {
                 CartUpdateBuilder.of()
                     .version(cart.getVersion())
                     .actions(
-                        addLineItemActions
+                        cartAddLineItemActions
                     )
                     .build()
             )
@@ -166,7 +162,8 @@ public class CartService {
                             .build()
                     )
                     .build()
-            ).execute();
+            )
+            .execute();
     }
 
     public CompletableFuture<ApiHttpResponse<Cart>> setShipping(final ApiHttpResponse<Cart> cartApiHttpResponse) {
@@ -199,7 +196,8 @@ public class CartService {
                             .build()
                     )
                     .build()
-            ).execute();
+            )
+            .execute();
     }
 
 }
