@@ -36,7 +36,19 @@ public class Task09a_ERROR_HANDLING {
         //  Use CompletionStage
         //
         logger.info("Customer fetch: " +
-                " "
+            customerService
+                .getCustomerByKey(customerKeyMayOrMayNotExist)
+                .thenApply(ApiHttpResponse::getBody)
+                .exceptionally(throwable -> {
+                    logger.info("Customer " + customerKeyMayOrMayNotExist + " does not exist.");
+                    return
+                        CustomerBuilder.of()
+                            .email("anonymous@example.org")
+                            .build();
+                })
+                .toCompletableFuture()
+                .get()
+                .getEmail()
         );
 
 
@@ -52,7 +64,23 @@ public class Task09a_ERROR_HANDLING {
         );
 
         // Handle now
+        if (!optionalCustomer.isPresent()) {
+            logger.info("Customer " + customerKeyMayOrMayNotExist + " does not exist.");
+        }
 
-
+        optionalCustomer.ifPresent(customer -> {
+            logger.info("Customer: " + customerKeyMayOrMayNotExist + "exists.");
+            try {
+                customerService.createEmailVerificationToken(customer, 5)
+                    .thenComposeAsync(customerTokenApiHttpResponse ->
+                        customerService.verifyEmail(
+                            customerTokenApiHttpResponse.getBody()
+                        ))
+                    .toCompletableFuture()
+                    .get();
+            } catch (Exception e) {
+                logger.error("Exception", e);
+            }
+        });
     }
 }
