@@ -3,7 +3,6 @@ package handson.impl;
 import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.models.common.AddressBuilder;
 import com.commercetools.api.models.customer.*;
-
 import com.commercetools.api.models.customer_group.CustomerGroup;
 import com.commercetools.api.models.customer_group.CustomerGroupResourceIdentifierBuilder;
 import io.vrap.rmf.base.client.ApiHttpResponse;
