@@ -126,24 +126,24 @@ public class Task05a_INSTORE_ME {
         final String storeCustomerEmail = getCustomerEmail(storeMeApiClientPrefix);
 
         logger.info("Created in-store cart with a store api client: "+
-                storeClient
-                        .inStore(meStoreKey)
-                        .me()
-                        .carts()
-                        .post(
-                                MyCartDraftBuilder.of()
-                                        .deleteDaysAfterLastModification(90L)
-                                        .currency("EUR")
-                                        .customerEmail(storeCustomerEmail)
-                                        .build()
-                        )
-                        .execute()
-                        .exceptionally(throwable -> {
-                            logger.info(throwable.getLocalizedMessage().toString());
-                            return null;
-                        })
-                        .toCompletableFuture().get()
-                        .getBody().getId()
+            meStoreClient
+                .inStore(meStoreKey)
+                .me()
+                .carts()
+                .post(
+                    MyCartDraftBuilder.of()
+                        .deleteDaysAfterLastModification(90L)
+                        .currency("EUR")
+                        .customerEmail(storeCustomerEmail)
+                        .build()
+                )
+                .execute()
+                .exceptionally(throwable -> {
+                    logger.info(throwable.getLocalizedMessage());
+                    return null;
+                })
+                .toCompletableFuture().get()
+                .getBody().getId()
         );
         meStoreClient.close();
 
