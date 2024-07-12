@@ -45,8 +45,8 @@ public class Task02a_CREATE {
                     "Liakh",
                     "DE"
                 )
-                    .thenComposeAsync(customerSignInResult ->
-                        customerService.createEmailVerificationToken(customerSignInResult, 5))
+                    .thenComposeAsync(customerSignInResultApiHttpResponse ->
+                        customerService.createEmailVerificationToken(customerSignInResultApiHttpResponse, 5))
                     .thenComposeAsync(customerService::verifyEmail)
                     .toCompletableFuture()
                     .get()
