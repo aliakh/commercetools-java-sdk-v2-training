@@ -120,32 +120,32 @@ public class Task05a_INSTORE_ME {
         //  Provide in-store-me API client with scope for a store and me endpoint
         //  Try creating a global cart without me and check the error message
         //  Visit impex to inspect the carts created
-//        final String storeMeApiClientPrefix = ApiPrefixHelper.API_STORE_ME_CLIENT_PREFIX.getPrefix();
-//        final ProjectApiRoot storeClient = createStoreMeApiClient(storeMeApiClientPrefix);
-//        final String storeKey = getStoreKey(storeMeApiClientPrefix);
-//        final String storeCustomerEmail = getCustomerEmail(storeMeApiClientPrefix);
-//
-//        logger.info("Created in-store cart with a store api client: "+
-//                storeClient
-//                        .inStore(storeKey)
-//                        .me()
-//                        .carts()
-//                        .post(
-//                                MyCartDraftBuilder.of()
-//                                        .deleteDaysAfterLastModification(90L)
-//                                        .currency("EUR")
-//                                        .customerEmail(storeCustomerEmail)
-//                                        .build()
-//                        )
-//                        .execute()
-//                        .exceptionally(throwable -> {
-//                            logger.info(throwable.getLocalizedMessage().toString());
-//                            return null;
-//                        })
-//                        .toCompletableFuture().get()
-//                        .getBody().getId()
-//        );
-//        storeClient.close();
+        final String storeMeApiClientPrefix = ApiPrefixHelper.API_STORE_ME_CLIENT_PREFIX.getPrefix();
+        final ProjectApiRoot meStoreClient = createStoreMeApiClient(storeMeApiClientPrefix);
+        final String meStoreKey = getStoreKey(storeMeApiClientPrefix);
+        final String storeCustomerEmail = getCustomerEmail(storeMeApiClientPrefix);
+
+        logger.info("Created in-store cart with a store api client: "+
+                storeClient
+                        .inStore(meStoreKey)
+                        .me()
+                        .carts()
+                        .post(
+                                MyCartDraftBuilder.of()
+                                        .deleteDaysAfterLastModification(90L)
+                                        .currency("EUR")
+                                        .customerEmail(storeCustomerEmail)
+                                        .build()
+                        )
+                        .execute()
+                        .exceptionally(throwable -> {
+                            logger.info(throwable.getLocalizedMessage().toString());
+                            return null;
+                        })
+                        .toCompletableFuture().get()
+                        .getBody().getId()
+        );
+        meStoreClient.close();
 
 
 
