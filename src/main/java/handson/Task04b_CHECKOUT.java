@@ -69,29 +69,26 @@ public class Task04b_CHECKOUT {
         logger.info("Created cart/order ID: " +
             customerService.getCustomerByKey("la-customer")
                 .thenComposeAsync(cartService::createCart)
-
                 .thenComposeAsync(cartApiHttpResponse -> cartService.addProductToCartBySkusAndChannel(
-                    cartApiHttpResponse, channel, "RWG-09", "GARM-093", "ADPC-7"
-                ))
-
+                        cartApiHttpResponse,
+                        channel,
+                        "RWG-09", "GARM-093", "ADPC-7"
+                    )
+                )
                 .thenComposeAsync(cartApiHttpResponse -> cartService.addDiscountToCart(cartApiHttpResponse, "BOGO"))
-
                 .thenComposeAsync(cartService::recalculate)
                 .thenComposeAsync(cartService::setShipping)
-
                 .thenComposeAsync(cartApiHttpResponse -> paymentService.createPaymentAndAddToCart(
-                    cartApiHttpResponse,
-                    "something",
-                    "CC",
-                    "interface" + Math.random(),
-                    "interaction" + Math.random()
-                ))
+                        cartApiHttpResponse,
+                        "something",
+                        "CC",
+                        "interface" + Math.random(),
+                        "interaction" + Math.random()
+                    )
+                )
                 .thenComposeAsync(orderService::createOrder)
-
                 .thenComposeAsync(orderApiHttpResponse -> orderService.changeState(orderApiHttpResponse, OrderState.COMPLETE))
-
                 .thenComposeAsync(orderApiHttpResponse -> orderService.changeWorkflowState(orderApiHttpResponse, state))
-
                 .toCompletableFuture()
                 .get()
                 .getBody()
