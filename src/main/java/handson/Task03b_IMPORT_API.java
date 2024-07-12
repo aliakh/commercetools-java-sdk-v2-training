@@ -42,14 +42,13 @@ public class Task03b_IMPORT_API {
                         .toCompletableFuture().get()
         );
 
-        // TODO
         Money amount = MoneyBuilder.of()
             .currencyCode("EUR")
             .centAmount(123456789L)
             .build();
 
         logger.info("Created price resource {} ",
-                importService.createPriceImportRequest(containerKey,"chianti-wine-glass","CWG-01", "ChiantiWineGlass01Price01", amount)
+                    importService.createPriceImportRequest(containerKey, "chianti-wine-glass", "CWG-01", "ChiantiWineGlass01Price01", amount)
                         .toCompletableFuture().get()
         );
 
