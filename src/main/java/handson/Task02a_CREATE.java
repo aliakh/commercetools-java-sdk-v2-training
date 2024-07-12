@@ -57,7 +57,8 @@ public class Task02a_CREATE {
                 customerService.getCustomerByKey("la-customer")
                     .toCompletableFuture()
                     .get()
-                    .getBody().getEmail()
+                    .getBody()
+                    .getEmail()
             );
 
         client.close();

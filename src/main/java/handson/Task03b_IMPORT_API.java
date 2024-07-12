@@ -25,7 +25,7 @@ public class Task03b_IMPORT_API {
         //  Provide a container key
         //
         final String apiImportClientPrefix = ApiPrefixHelper.API_DEV_IMPORT_PREFIX.getPrefix();
-        final String containerKey = "la2-price-container";
+        final String containerKey = "la-price-container";
 
         Logger logger = LoggerFactory.getLogger(Task02b_UPDATE_Group.class.getName());
         final ProjectApiRoot client = createImportApiClient(apiImportClientPrefix);

@@ -54,7 +54,7 @@ public class PaymentService {
                                         .paymentMethodInfo(
                                                 PaymentMethodInfoBuilder.of()
                                                         .paymentInterface(psp_Name)        // PSP Provider Name: WireCard, ....
-                                                        .method(psp_Method)                // PSP Provider Method: CreditCard
+                                                        .method(psp_Method)                // PSP Provider Method: CreditCard, ...
                                                         .build())
                                         .interfaceId(interfaceId)                          // ID of the payment, important !!!
                                         .build()
