@@ -33,11 +33,13 @@ public class Task05b_PRODUCTSELECTIONS {
 
         // TODO: Create product selection and add a product to the product selection
 
-        ProductSelection productSelection = productSelectionService
-            .createProductSelection(productSelectionKey, "LA Product Selection")
-            .toCompletableFuture()
-            .get()
-            .getBody();
+        // TODO: Create product selection and add a product to the product selection
+
+        ProductSelection productSelection = productSelectionService.createProductSelection(productSelectionKey,"MH Berlin Product Selection")
+                    .thenComposeAsync(productSelectionApiHttpResponse ->
+                            productSelectionService.addProductToProductSelection(productSelectionApiHttpResponse,"tulip-seed-product"))
+                .toCompletableFuture().get()
+                .getBody();
         logger.info("Created product selection: " + productSelection.getId());
 
 
@@ -46,17 +48,13 @@ public class Task05b_PRODUCTSELECTIONS {
 
 
         logger.info("Product selections assigned to the store: " +
-            productSelectionService.getStoreByKey("cool-store")
-                .thenComposeAsync(storeApiHttpResponse ->
-                    productSelectionService.addProductSelectionToStore(
-                        storeApiHttpResponse,
-                        productSelectionService.getProductsInProductSelection(productSelectionKey)
-                    ))
-                .thenComposeAsync(x ->
-                    productSelectionService.)
-                .toCompletableFuture()
-                .get()
-                .getBody()
+                productSelectionService.getStoreByKey("berlin-store")
+                        .thenCombineAsync(productSelectionService.getProductSelectionByKey(productSelectionKey),((storeApiHttpResponse, productSelectionApiHttpResponse) ->
+                                productSelectionService.addProductSelectionToStore(storeApiHttpResponse,productSelectionApiHttpResponse))
+                        )
+                        .thenComposeAsync(CompletableFuture::toCompletableFuture)
+                        .toCompletableFuture().get()
+                        .getBody().getProductSelections().size()
         );
 
 
@@ -64,9 +62,8 @@ public class Task05b_PRODUCTSELECTIONS {
 
         List<AssignedProductReference> assignedProductReferences =
             productSelectionService.getProductsInProductSelection(productSelectionKey)
-                .get()
-                .getBody()
-                .getResults();
+                .toCompletableFuture().get().getBody().getResults();
+
         assignedProductReferences.forEach(assignedProductReference -> logger.info(assignedProductReference.getProduct().getObj().getKey()));
     }
 }
