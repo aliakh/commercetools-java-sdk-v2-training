@@ -52,14 +52,14 @@ public class Task06b_PAGEDQUERY {
 
         String productTypeId = client
                 .productTypes()
-                .withKey("furniture-and-decor")
+                .withKey("plant-seeds-product-type")
                 .get()
                 .execute()
                 .toCompletableFuture().get()
                 .getBody().getId();
 
-
         //  link to give to our customers https://docs.commercetools.com/api/predicates/query
+
         while(!lastPage) {
             ProductPagedQueryResponse productPagedQueryResponse =
                     client
@@ -74,6 +74,8 @@ public class Task06b_PAGEDQUERY {
                             .withPredicateVar("lastId", lastId)
                             .addPredicateVar("productTypeId", productTypeId)
 
+                            //.withQuery(q -> q.id().isVar("lastId"), "lastId", lastId)
+                            //.addQuery(q -> q.productType(t -> t.id().isVar("productTypeId")), "productTypeId", productTypeId)
 
                             // Limit the size per page
                             .withLimit(PAGE_SIZE)
